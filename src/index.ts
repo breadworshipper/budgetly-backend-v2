@@ -1,6 +1,8 @@
+require("dotenv").config({path: "../.env"});
 import express from "express";
 
 import {connectDB} from "./configs/mongo.db.connect.js"
+import {passportSetup} from "./api/middlewares/app.auth.js";
 
 const app = express();
 
@@ -12,8 +14,10 @@ const server = app.listen(3000, () => {
     }
 
     connectDB(dbUrl);
+    
+    passportSetup();
 
-    console.log("Server is up and running .");
+    console.log("Server is up and running.");
 });
 
 export {app};
