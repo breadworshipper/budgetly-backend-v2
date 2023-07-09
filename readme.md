@@ -8,5 +8,6 @@
     - SECRET (your custom secret)
 - Run the following in terminal :
 ```
+npm install
 npm start
 ```
