@@ -18,4 +18,4 @@ async function passportSetup(){
     passport.deserializeUser(userModel.deserializeUser());
 }
 
-export {passportSetup}
+export {passportSetup};
