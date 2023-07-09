@@ -4,4 +4,4 @@ async function connectDB(dbUrl: string){
     mongoose.connect(dbUrl);
 }
 
-export {connectDB};
+export {connectDB}
