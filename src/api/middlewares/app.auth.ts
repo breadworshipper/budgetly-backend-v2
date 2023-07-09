@@ -16,6 +16,8 @@ async function passportSetup(){
     passport.use(userModel.createStrategy());
     passport.serializeUser(userModel.serializeUser());
     passport.deserializeUser(userModel.deserializeUser());
+
+    console.log("Passport done setting-up");
 }
 
 export {passportSetup};
