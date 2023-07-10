@@ -5,6 +5,7 @@ import {connectDB} from "./configs/mongo.db.connect.js"
 import {passportSetup} from "./api/middlewares/app.auth.js";
 import { bodyParserSetup } from "./api/middlewares/bodyParser.setup.js";
 import { authenticationRouter } from "./api/routes/auth.route.js";
+import { logger } from "./api/middlewares/winston.logger.js";
 
 const app = express();
 
@@ -23,7 +24,7 @@ bodyParserSetup();
 app.use("/api/v1/auth", authenticationRouter);
 
 const server = app.listen(3000, () => {
-    console.log("Server is up and running.");
+    logger.info("Server is up and running.");
 });
 
 export {app};

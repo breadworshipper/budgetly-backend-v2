@@ -1,6 +1,7 @@
 import { userModel } from "../models/user.model.js";
 import passport from "passport";
 import bcrypt from "bcrypt";
+import { logger } from "../middlewares/winston.logger.js";
 
 async function registerUser(req, res){
     console.log("Masuk service.")
@@ -14,6 +15,8 @@ async function registerUser(req, res){
     });
 
     await newUser.save();
+
+    logger.info(`Email : ${email} has been registered`);
 
     return newUser;
 }
