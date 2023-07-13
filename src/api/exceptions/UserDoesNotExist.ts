@@ -1,4 +1,4 @@
-class UserAlreadyRegistered extends Error {
+class UserDoesNotExist extends Error {
     constructor(message){
         super (message);
 
@@ -8,4 +8,4 @@ class UserAlreadyRegistered extends Error {
     }
 }
 
-export {UserAlreadyRegistered};
+export {UserDoesNotExist};
