@@ -1,6 +1,6 @@
 class UserAlreadyRegistered extends Error {
     constructor(message){
-        super (message + " is already registered.");
+        super (message);
 
         this.name = this.constructor.name;
 
