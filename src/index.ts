@@ -4,6 +4,7 @@ import "dotenv/config";
 import {connectDB} from "./configs/mongo.db.connect.js"
 import {passportSetup} from "./api/middlewares/app.auth.js";
 import { bodyParserSetup } from "./api/middlewares/bodyParser.setup.js";
+import { swaggerSetup } from "./api/middlewares/swagger.js";
 import { authenticationRouter } from "./api/routes/auth.route.js";
 import { logger } from "./api/middlewares/winston.logger.js";
 
@@ -20,6 +21,8 @@ connectDB(dbUrl);
 passportSetup();
 
 bodyParserSetup();
+
+swaggerSetup();
 
 app.use("/api/v1/auth", authenticationRouter);
 

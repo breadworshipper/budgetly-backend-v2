@@ -2,15 +2,13 @@ import express from "express";
 import bodyParser from "body-parser";
 
 import { loginUser, registerUser } from "../controllers/authentication.controllers.js";
+import { userModel } from "../models/user.model.js";
 
 const authenticationRouter = express.Router();
 const jsonParser = bodyParser.json();
 
 authenticationRouter.post("/register", jsonParser, (req, res) => {
-    // TODO: Login request
-    registerUser(req, res).then((result) => {
-        res.json(result);
-    });
+    registerUser(req, res);
 });
 
 authenticationRouter.post("/login", jsonParser, (req, res) => {
