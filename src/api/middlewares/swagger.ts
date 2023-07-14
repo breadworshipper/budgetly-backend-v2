@@ -2,11 +2,12 @@ import swaggerUi from "swagger-ui-express";
 import { app } from "../../index.js";
 import swaggerJsdoc from "swagger-jsdoc";
 
-const options = {
+const options: swaggerJsdoc.Options = {
     definition : {
         openapi: '3.0.0',
         info: {
-            title: "budgetly REST API"
+            title: "budgetly REST API",
+            version: "1.0.0"
         }
     },
     apis: ["../routes/*.js"]
