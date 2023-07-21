@@ -1,5 +1,6 @@
 import { userModel } from "../models/user.model.js"
 import { logger } from "../middlewares/winston.logger.js"
+import { validateToken } from "../middlewares/validate.token.handler.js"
 
 
 async function addBudget(req, res){
@@ -7,6 +8,9 @@ async function addBudget(req, res){
     //logger.info(...)
 
     // return budget
+    validateToken(req, res, () => {
+        return res.json(req.user);
+    });
 }
 
 async function readBudget(req, res){
