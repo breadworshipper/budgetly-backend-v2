@@ -1,8 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { loginUser, registerUser } from "../controllers/authentication.controllers.js";
-import { userModel } from "../models/user.model.js";
+import { registerUser, loginUser, currentUser } from "../controllers/authentication.controllers.js";
 
 const authenticationRouter = express.Router();
 const jsonParser = bodyParser.json();
@@ -13,6 +12,10 @@ authenticationRouter.post("/register", jsonParser, (req, res) => {
 
 authenticationRouter.post("/login", jsonParser, (req, res) => {
     loginUser(req, res);
+});
+
+authenticationRouter.post("/current", (req, res) => {
+    currentUser(req, res);
 });
 
 export {authenticationRouter};
