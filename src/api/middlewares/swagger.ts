@@ -6,8 +6,9 @@ const options = {
     definition : {
         openapi: '3.0.0',
         info: {
-            title: "budgetly REST API"
-        }
+            title: "budgetly REST API",
+            version: "1.0.0"
+        },
     },
     apis: ["../routes/*.js"]
 };

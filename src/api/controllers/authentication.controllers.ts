@@ -1,49 +1,64 @@
 import { userModel } from "../models/user.model.js";
-import passport from "passport";
 import bcrypt from "bcrypt";
-import { logger } from "../middlewares/winston.logger.js";
+import jwt from "jsonwebtoken";
+import { validateToken } from "../middlewares/validate.token.handler.js";
 
 async function registerUser(req, res){
-    const { email, password } = req.body;
+    const {username, password} = req.body;
+
+    if (!username || !password){
+        return res.status(400).send("All fields are required.");
+    }
+
+    const userAvailable = await userModel.findOne({username});
+
+    if (userAvailable){
+        return res.status(400).send("User is already registered.");
+    }
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    const newUser = new userModel({
-        username: email,
+    const user = await userModel.create({
+        username: username,
         password: hashedPassword
     });
 
-    await newUser.save();
-
-    logger.info(`Email : ${email} has been registered`);
-
-    return res.json(newUser);
+    if(user){
+        return res.status(201).json({_id: user.id})
+    }
+    
+    return res.status(400).send("User data is not valid.");
 }
 
 async function loginUser(req, res){
-  const {email, password} = req.body;
+    const {username, password} = req.body;
 
-  const user = await userModel.findOne({username: email});
+    if (!username || !password){
+        return res.status(400).send("All fields are required.");
+    }
+    
+    const user = await userModel.findOne({username});
 
-  if (!user){
-    return res.status(401).send("User does not exist.");
-  }
+    if (user && (await bcrypt.compare(password, user.password))){
+        const accessToken = jwt.sign({
+            user: {
+                id: user.id,
+                username: user.username
+            }
+        }, 
+        process.env.SECRET,
+        {expiresIn: "30m"});
 
-  const passwordMatch = await bcrypt.compare(password, user.password);
+        return res.status(200).json({accessToken})
+    }
 
-  if (passwordMatch){
-    req.login(user, (err) => {
-      if (err){
-        return res.status(500).send("Login failed.");
-      }
-
-      logger.info(`${user.username} just logged in.`);
-    });
-
-    return res.json(user);
-  }
-
-  return res.status(401).send("Invalid password.");
+    return res.status(401).send("Log in failed (email or password is not valid).");
 }
 
-export {registerUser, loginUser};
+async function currentUser(req, res){
+    validateToken(req, res, () =>{
+        res.json(req.user);
+    });
+}
+
+export {registerUser, loginUser, currentUser};

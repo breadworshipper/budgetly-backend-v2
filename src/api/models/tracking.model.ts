@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-var trackingSchema = new mongoose.Schema(
+const trackingSchema = new mongoose.Schema(
     {   
         name: String,
         isExpense: Boolean,

@@ -2,15 +2,15 @@ import express from "express";
 import "dotenv/config";
 
 import {connectDB} from "./configs/mongo.db.connect.js"
-import {passportSetup} from "./api/middlewares/app.auth.js";
 import { bodyParserSetup } from "./api/middlewares/bodyParser.setup.js";
 import { swaggerSetup } from "./api/middlewares/swagger.js";
 import { authenticationRouter } from "./api/routes/auth.route.js";
+import { budgetRouter } from "./api/routes/budget.route.js";
 import { logger } from "./api/middlewares/winston.logger.js";
 
 const app = express();
 
-var dbUrl = process.env.DEVELOPMENT_DB_URL;
+let dbUrl = process.env.DEVELOPMENT_DB_URL;
 
 if (process.env.NOVE_ENV === "production"){
     dbUrl = process.env.PRODUCTION_DB_URL;
@@ -18,15 +18,15 @@ if (process.env.NOVE_ENV === "production"){
 
 connectDB(dbUrl);
 
-passportSetup();
-
 bodyParserSetup();
 
 swaggerSetup();
 
+app.use(express.json());
 app.use("/api/v1/auth", authenticationRouter);
+app.use("/api/v1/budget", budgetRouter);
 
-const server = app.listen(3000, () => {
+app.listen(3000, () => {
     logger.info("Server is up and running.");
 });
 
