@@ -11,12 +11,12 @@ import { trackingRouter } from "./api/routes/tracking.route.js";
 
 const app = express();
 
-let dbUrl = process.env.DEVELOPMENT_DB_URL;
+let dbUrl = 'mongodb://localhost:27017/budgetlyDB';
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3030;
 
 if (process.env.NOVE_ENV === "production"){
-    dbUrl = process.env.PRODUCTION_DB_URL;
+    dbUrl = 'mongodb://localhost:27017/budgetlyDB';
 }
 
 connectDB(dbUrl);
