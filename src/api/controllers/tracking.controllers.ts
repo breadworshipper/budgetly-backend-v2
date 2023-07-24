@@ -1,7 +1,7 @@
 import { userModel } from "../models/user.model.js"
 import { logger } from "../middlewares/winston.logger.js"
 import { currentUser } from "./authentication.controllers.js";
-import { trackingmodel } from "../models/tracking.model.js";
+import { trackingModel } from "../models/tracking.model.js";
 import { categoryModel } from "../models/category.model.js";
 
 
@@ -17,7 +17,7 @@ async function addTracking(req, res){
 
     const user = currentUser;
 
-    const tracking = await trackingmodel.create({
+    const tracking = await trackingModel.create({
         name : name,
         isExpense : isExpense,
         date : date,
@@ -36,11 +36,12 @@ async function readTracking(req, res){
     if(req.body.id){
         const id = req.body.id;
 
-        trackingmodel.findById(id)
+        trackingModel.findById(id)
             .then(data =>{
                 if(!data){
                     res.status(404).send({ message : "Not found tracking with id "+ id})
                 }else{
+                    logger.info(`Sent tracking data with ID ${id}`)
                     res.send(data)
                 }
             })
@@ -49,9 +50,10 @@ async function readTracking(req, res){
             })
 
     }else{
-        trackingmodel.find()
-            .then(user => {
-                res.send(user)
+        trackingModel.find()
+            .then(data => {
+                logger.info(`Sent all tracking data`)
+                res.send(data)
             })
             .catch(err => {
                 res.status(500).send({ message : err.message || "Error Occurred while retriving tracking information" })

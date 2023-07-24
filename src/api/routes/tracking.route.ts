@@ -7,19 +7,11 @@ const trackingRouter = express.Router();
 const jsonParser = bodyParser.json();
 
 trackingRouter.post("/create-tracking", jsonParser, (req, res) => {
-    addTracking(req, res).then(
-        (result) => {
-            res.json(result);
-        }
-    );
+    addTracking(req, res);
 });
 
 trackingRouter.get("/read-tracking", jsonParser, (req, res) => {
-    readTracking(req, res).then(
-        (result) => {
-            res.json(result);
-        }
-    );
+    readTracking(req, res);
 });
 
 // TODO : PUT route

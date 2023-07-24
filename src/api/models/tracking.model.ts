@@ -10,6 +10,6 @@ const trackingSchema = new mongoose.Schema(
     }
 );
 
-const trackingmodel = mongoose.model("Tracking", trackingSchema);
+const trackingModel = mongoose.model("Tracking", trackingSchema);
 
-export {trackingmodel};
+export {trackingModel};

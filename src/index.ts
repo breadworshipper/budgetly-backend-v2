@@ -11,7 +11,7 @@ import { trackingRouter } from "./api/routes/tracking.route.js";
 
 const app = express();
 
-let dbUrl = 'mongodb://localhost:27017/budgetlyDB';
+let dbUrl = process.env.DEVELOPMENT_DB_URL;
 
 const PORT = process.env.PORT || 3030;
 
@@ -31,7 +31,7 @@ app.use("/api/v1/budget", budgetRouter);
 app.use("/api/v1/tracking", trackingRouter);
 
 app.listen(PORT, () => {
-    logger.info("Server is up and running.");
+    logger.info(`Server is up and running on port ${PORT}.`);
 });
 
 export {app};
