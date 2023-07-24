@@ -6,7 +6,6 @@ import { categoryModel } from "../models/category.model.js";
 
 
 async function addTracking(req, res){
-    // TODO
     // validate request
     if(!req.body){
         res.status(400).send({ message : "Content can not be emtpy!"});
@@ -62,15 +61,58 @@ async function readTracking(req, res){
 }
 
 async function updateTracking(req, res){
-    // TODO
-    // logger.info(...)
+    if(!req.body){
+        return res
+            .status(400)
+            .send({ message : "Data to update can not be empty"})
+    }
+    const id = req.params.id;
 
-    // return tracking
+    const {name, isExpense, date, category, amount} = req.body;
+
+    const user = currentUser;
+
+    const trackingData = {
+        name : name,
+        isExpense : isExpense,
+        date : date,
+        category : await categoryModel.findOne({category}),
+        amount : amount
+    };
+
+    trackingModel.findByIdAndUpdate(id, trackingData, { useFindAndModify: false})
+        .then(data => {
+            if(!data){
+                res.status(404).send({ message : `Cannot Update tracking with ID ${id}. Maybe tracking not found!`})
+            }else{
+                trackingModel.findById(id).then(data => {
+                    res.send(data)
+                })
+            }
+        })
+        .catch(err =>{
+            res.status(500).send({ message : "Error Update tracking information " + err})
+        })
 }
 
 async function deleteTracking(req, res){
-    // TODO
-    // logger.info(...)
+    const id = req.params.id;
+
+    trackingModel.findByIdAndDelete(id)
+        .then(data => {
+            if(!data){
+                res.status(404).send({ message : `Cannot Delete with id ${id}. Maybe id is wrong`})
+            }else{
+                res.send({
+                    message : "Tracking was deleted successfully!"
+                })
+            }
+        })
+        .catch(err =>{
+            res.status(500).send({
+                message: `Could not delete Tracking with id= ${id}`
+            });
+        });
 }
 
 // ... Klo ada yang kurang tambahkan

@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { addTracking, readTracking } from "../controllers/tracking.controllers.js";
+import { addTracking, deleteTracking, readTracking, updateTracking } from "../controllers/tracking.controllers.js";
 
 const trackingRouter = express.Router();
 const jsonParser = bodyParser.json();
@@ -14,8 +14,12 @@ trackingRouter.get("/read-tracking", jsonParser, (req, res) => {
     readTracking(req, res);
 });
 
-// TODO : PUT route
+trackingRouter.put("/update-tracking/:id", jsonParser, (req, res) => {
+    updateTracking(req, res);
+});
 
-// TODO : DELETE route
+trackingRouter.delete("/delete-tracking/:id", jsonParser, (req, res) => {
+    deleteTracking(req, res);
+});
 
 export {trackingRouter};
