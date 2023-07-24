@@ -6,7 +6,7 @@ import { addTracking, readTracking } from "../controllers/tracking.controllers.j
 const trackingRouter = express.Router();
 const jsonParser = bodyParser.json();
 
-trackingRouter.post("/", jsonParser, (req, res) => {
+trackingRouter.post("/create-tracking", jsonParser, (req, res) => {
     addTracking(req, res).then(
         (result) => {
             res.json(result);
@@ -14,7 +14,7 @@ trackingRouter.post("/", jsonParser, (req, res) => {
     );
 });
 
-trackingRouter.get("/", jsonParser, (req, res) => {
+trackingRouter.get("/read-tracking", jsonParser, (req, res) => {
     readTracking(req, res).then(
         (result) => {
             res.json(result);

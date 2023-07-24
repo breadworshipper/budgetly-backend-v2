@@ -33,10 +33,30 @@ async function addTracking(req, res){
 }
 
 async function readTracking(req, res){
-    // TODO
-    // logger.info(...)
+    if(req.body.id){
+        const id = req.body.id;
 
-    // return tracking
+        trackingmodel.findById(id)
+            .then(data =>{
+                if(!data){
+                    res.status(404).send({ message : "Not found tracking with id "+ id})
+                }else{
+                    res.send(data)
+                }
+            })
+            .catch(err =>{
+                res.status(500).send({ message: "Erro retrieving tracking with id " + id})
+            })
+
+    }else{
+        trackingmodel.find()
+            .then(user => {
+                res.send(user)
+            })
+            .catch(err => {
+                res.status(500).send({ message : err.message || "Error Occurred while retriving tracking information" })
+            })
+    }
 }
 
 async function updateTracking(req, res){
