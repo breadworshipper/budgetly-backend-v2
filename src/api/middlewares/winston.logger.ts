@@ -7,7 +7,7 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.File({ filename: "combined.log" }),
     new winston.transports.MongoDB({
-        db : process.env.DEVELOPMENT_DB_URL,
+        db : 'mongodb://localhost:27017/budgetlyDB',
         collection: "logs"
     })
   ],

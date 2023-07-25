@@ -1,12 +1,11 @@
 import { userModel } from "../models/user.model.js"
 import { logger } from "../middlewares/winston.logger.js"
 import { currentUser } from "./authentication.controllers.js";
-import { trackingmodel } from "../models/tracking.model.js";
+import { trackingModel } from "../models/tracking.model.js";
 import { categoryModel } from "../models/category.model.js";
 
 
 async function addTracking(req, res){
-    // TODO
     // validate request
     if(!req.body){
         res.status(400).send({ message : "Content can not be emtpy!"});
@@ -17,7 +16,7 @@ async function addTracking(req, res){
 
     const user = currentUser;
 
-    const tracking = await trackingmodel.create({
+    const tracking = await trackingModel.create({
         name : name,
         isExpense : isExpense,
         date : date,
@@ -33,22 +32,87 @@ async function addTracking(req, res){
 }
 
 async function readTracking(req, res){
-    // TODO
-    // logger.info(...)
+    if(req.body.id){
+        const id = req.body.id;
 
-    // return tracking
+        trackingModel.findById(id)
+            .then(data =>{
+                if(!data){
+                    res.status(404).send({ message : "Not found tracking with id "+ id})
+                }else{
+                    logger.info(`Sent tracking data with ID ${id}`)
+                    res.send(data)
+                }
+            })
+            .catch(err =>{
+                res.status(500).send({ message: "Erro retrieving tracking with id " + id})
+            })
+
+    }else{
+        trackingModel.find()
+            .then(data => {
+                logger.info(`Sent all tracking data`)
+                res.send(data)
+            })
+            .catch(err => {
+                res.status(500).send({ message : err.message || "Error Occurred while retriving tracking information" })
+            })
+    }
 }
 
 async function updateTracking(req, res){
-    // TODO
-    // logger.info(...)
+    if(!req.body){
+        return res
+            .status(400)
+            .send({ message : "Data to update can not be empty"})
+    }
+    const id = req.params.id;
 
-    // return tracking
+    const {name, isExpense, date, category, amount} = req.body;
+
+    const user = currentUser;
+
+    const trackingData = {
+        name : name,
+        isExpense : isExpense,
+        date : date,
+        category : await categoryModel.findOne({category}),
+        amount : amount
+    };
+
+    trackingModel.findByIdAndUpdate(id, trackingData, { useFindAndModify: false})
+        .then(data => {
+            if(!data){
+                res.status(404).send({ message : `Cannot Update tracking with ID ${id}. Maybe tracking not found!`})
+            }else{
+                trackingModel.findById(id).then(data => {
+                    res.send(data)
+                })
+            }
+        })
+        .catch(err =>{
+            res.status(500).send({ message : "Error Update tracking information " + err})
+        })
 }
 
 async function deleteTracking(req, res){
-    // TODO
-    // logger.info(...)
+    const id = req.params.id;
+
+    trackingModel.findByIdAndDelete(id)
+        .then(data => {
+            if(!data){
+                res.status(404).send({ message : `Cannot Delete with id ${id}. Maybe id is wrong`})
+            }else{
+                res.send({
+                    message : "Tracking was deleted successfully!"
+                })
+            }
+        })
+        .catch(err =>{
+            res.status(500).send({
+                message: `Could not delete Tracking with id= ${id}`
+            });
+        });
 }
 
 // ... Klo ada yang kurang tambahkan
