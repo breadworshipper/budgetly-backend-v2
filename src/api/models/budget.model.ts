@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const budgetSchema = new mongoose.Schema(
     {
-        owner: {type: mongoose.Schema.Types.ObjectId, ref: "_User"},
+        owner: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
         name: String,
         currentSpending: Number,
         target: Number,
