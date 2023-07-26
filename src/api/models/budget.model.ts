@@ -5,7 +5,12 @@ const budgetSchema = new mongoose.Schema(
         owner: {type: mongoose.Schema.Types.ObjectId, ref: "_User"},
         name: String,
         currentSpending: Number,
-        target: Number
+        target: Number,
+        startDate: {
+            type: Date,
+            default: Date.now()
+        },
+        endDate: Date,
     }
 );
 
