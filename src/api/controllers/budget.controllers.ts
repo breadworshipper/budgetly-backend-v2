@@ -6,6 +6,8 @@ import { validateToken } from "../middlewares/validate.token.handler.js"
 async function addBudget(req, res){
     validateToken(req, res, () => {
     });
+
+    // TODO : startDate, endDate
     const {ownerId, name} = req.body;
 
     if (!ownerId || !name){
@@ -23,10 +25,26 @@ async function addBudget(req, res){
 }
 
 async function readBudget(req, res){
-    // TODO
-    // logger.info(...)
+    validateToken(req, res, () => {
+    });
 
-    // return budget
+    const budgetId = req.params.id;
+
+    const budget = await budgetModel.findById(budgetId);
+
+    console.log(budget);
+
+    if (!budget){
+        return res.status(400).send(`Budget with id ${budgetId} does not exist.`);
+    }
+
+    return res.status(200).send(budget);
+}
+
+async function readBudgetByUserId(req, res){
+    validateToken(req, res, () => {
+    });
+    
 }
 
 async function updateBudget(req, res){
@@ -40,7 +58,5 @@ async function deleteBudget(req, res){
     // TODO
     // logger.info(...)
 }
-
-// ... Klo ada yang kurang tambahkan
 
 export {addBudget, readBudget, updateBudget, deleteBudget}
