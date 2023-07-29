@@ -41,6 +41,11 @@ async function readBudget(req, res){
 
 async function readBudgetByUserId(req, res){
     validateToken(req, res, async () => {
+        const userId = req.params.id;
+
+        const userBudget = await budgetModel.find({ownerId: userId});
+
+        return res.status(200).json(userBudget);
     });
     
 }
@@ -57,4 +62,4 @@ async function deleteBudget(req, res){
     // logger.info(...)
 }
 
-export {addBudget, readBudget, updateBudget, deleteBudget}
+export {addBudget, readBudget, readBudgetByUserId, updateBudget, deleteBudget}
