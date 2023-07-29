@@ -6,10 +6,10 @@ import { validateToken } from "../middlewares/validate.token.handler.js"
 async function addBudget(req, res){
     validateToken(req, res, async () => {
         // TODO : startDate, endDate
-        const {ownerId, name} = req.body;
+        const {ownerId, name, target} = req.body;
 
-        if (!ownerId || !name){
-            res.send("ownerId and name fields are required.");
+        if (!ownerId || !name || !target){
+            res.send("ownerId, name, and target fields are required.");
         }
 
         const newBudget = await budgetModel.create({
