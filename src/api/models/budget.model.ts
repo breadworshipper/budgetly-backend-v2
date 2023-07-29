@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import { oneMonthFromNow } from "../helpers/one.month.increment.js";
 
 const budgetSchema = new mongoose.Schema(
     {
         ownerId: {
             type: mongoose.Schema.Types.ObjectId, 
             ref: "User",
-            require: true
+            required: true
         },
         name: String,
         currentSpending: {
@@ -14,7 +15,7 @@ const budgetSchema = new mongoose.Schema(
         },
         target: {
             type: Number,
-            require: true
+            required: true
         },
         startDate: {
             type: Date,
@@ -22,7 +23,7 @@ const budgetSchema = new mongoose.Schema(
         },
         endDate: {
             type: Date,
-            require: true
+            default: oneMonthFromNow
         },
     }
 );
