@@ -74,8 +74,18 @@ async function updateBudget(req, res){
 }
 
 async function deleteBudget(req, res){
-    // TODO
-    // logger.info(...)
+    try {
+        validateToken(req, res, async () => {
+            const budgetId = req.params.id;
+
+            const deletedBudget = await budgetModel.findByIdAndDelete({_id: budgetId});
+    
+            return res.status(200).json(deletedBudget);
+        });
+    }
+    catch {
+        return res.status(500).send("Error deleting budget.");
+    }
 }
 
 export {addBudget, readBudget, readBudgetByUserId, updateBudget, deleteBudget}
