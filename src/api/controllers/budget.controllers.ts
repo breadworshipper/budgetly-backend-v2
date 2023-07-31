@@ -29,8 +29,6 @@ async function readBudget(req, res){
 
         const budget = await budgetModel.findById(budgetId);
     
-        console.log(budget);
-    
         if (!budget){
             return res.status(400).send(`Budget with id ${budgetId} does not exist.`);
         }
@@ -51,10 +49,28 @@ async function readBudgetByUserId(req, res){
 }
 
 async function updateBudget(req, res){
-    // TODO
-    // logger.info(...)
+    validateToken(req, res, async() => {
+        try{
+            if (!req.body) {
+                return res.status(400).send("No body was sent.");
+            }
+    
+            const budgetId = req.params.id;
+            
+            // TODO : rest of the budget attributes
+            const {name, target} = req.body;
+    
+            const updatedBudget = await budgetModel.findByIdAndUpdate(
+                {_id : budgetId},
+                {name: name, target: target},
+                {new: true});
 
-    // return budget
+            return res.status(200).json(updatedBudget);
+        }
+        catch {
+            return res.status(500).send("Error updating budget.");
+        }
+    });
 }
 
 async function deleteBudget(req, res){
