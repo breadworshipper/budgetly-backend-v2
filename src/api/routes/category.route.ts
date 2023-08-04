@@ -6,7 +6,7 @@ import { createCategory, deleteCategory, readCategory, updateCategory } from "..
 const categoryRouter = express.Router();
 const jsonParser = bodyParser.json();
 
-categoryRouter.post("/create-category/:categoryName", jsonParser, (req, res) => {
+categoryRouter.post("/create-category", jsonParser, (req, res) => {
     createCategory(req, res);
 });
 
@@ -14,7 +14,7 @@ categoryRouter.get("/read-category", jsonParser, (req, res) => {
     readCategory(req, res);
 })
 
-categoryRouter.update("/update-category/:id", jsonParser, (req, res) => {
+categoryRouter.put("/update-category/:id", jsonParser, (req, res) => {
     updateCategory(req, res);
 })
 

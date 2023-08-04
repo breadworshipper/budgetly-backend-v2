@@ -21,11 +21,20 @@ async function categoryExistCheck(
 }
 
 async function createCategory(req, res) {
-    // Get prerequisite data
-    const categoryName = req.params.categoryName;
+    // validate request
+    if (!req.body) {
+        res.status(400).send({ message: "Content can not be emtpy!" });
+        return;
+    }
 
-    await validateToken(req, res, () => { });
-    const ownerId = req.user.id;
+    // Get prerequisite data
+    const categoryName = req.body.categoryName;
+
+   await validateToken(req, res, () => { });
+        if(!req.user){ 
+            return;
+        }
+        const ownerId = req.user.id;
 
     const categoryExistBool = await categoryExistCheck(categoryName, ownerId);
 
