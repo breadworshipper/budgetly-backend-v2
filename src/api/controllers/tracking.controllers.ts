@@ -3,6 +3,7 @@
     import { trackingModel } from "../models/tracking.model.js";
     import { categoryModel } from "../models/category.model.js";
     import { validateToken } from "../middlewares/validate.token.handler.js";
+import { createCategory } from "./category.controllers.js";
 
 
     async function addTracking(req, res) {
@@ -16,7 +17,6 @@
         
         await validateToken(req, res, () => { });
         if(!req.user){ 
-            res.status(500).send({ message: "User not found, please make sure you're logged in" })
             return;
         }
         const ownerId = req.user.id;
@@ -26,18 +26,28 @@
             owner: ownerId
         }
         let category;
+        let categoryId;
         
         category = await categoryModel.findOne(categoryQueryCriteria)
         if (category === null){
-            // create new category
+            const category = await categoryModel.create({
+                name: categoryName,
+                owner: ownerId
+            });
+    
+            logger.info(`${categoryName} category for ${ownerId} has been created`)
+    
+            if (category) {
+                const categoryId = category.id;
+            }
+
         }
 
-        logger.info(category);
         const tracking = await trackingModel.create({
             name: name,
             isExpense: isExpense,
             date: date,
-            category: category,
+            category: categoryId,
             amount: amount,
             owner : ownerId
         });
@@ -120,7 +130,7 @@
         trackingModel.findByIdAndDelete(id)
             .then(data => {
                 if (!data) {
-                    res.status(404).send({ message: `Cannot Delete with id ${id}. Maybe id is wrong` })
+                    res.status(404).send({ message: `Tracking with id ${id} not found` })
                 } else {
                     res.send({
                         message: "Tracking was deleted successfully!"
