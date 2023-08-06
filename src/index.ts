@@ -8,6 +8,7 @@ import { authenticationRouter } from "./api/routes/auth.route.js";
 import { budgetRouter } from "./api/routes/budget.route.js";
 import { logger } from "./api/middlewares/winston.logger.js";
 import { trackingRouter } from "./api/routes/tracking.route.js";
+import { categoryRouter } from "./api/routes/category.route.js";
 
 const app = express();
 
@@ -16,7 +17,7 @@ let dbUrl = process.env.DEVELOPMENT_DB_URL;
 const PORT = process.env.PORT || 3030;
 
 if (process.env.NOVE_ENV === "production"){
-    dbUrl = 'mongodb://localhost:27017/budgetlyDB';
+    dbUrl = process.env.PRODUCTION_DB_URL;
 }
 
 connectDB(dbUrl);
@@ -29,6 +30,7 @@ app.use(express.json());
 app.use("/api/v1/auth", authenticationRouter);
 app.use("/api/v1/budget", budgetRouter);
 app.use("/api/v1/tracking", trackingRouter);
+app.use("/api/v1/category", categoryRouter);
 
 app.listen(PORT, () => {
     logger.info(`Server is up and running on port ${PORT}.`);
