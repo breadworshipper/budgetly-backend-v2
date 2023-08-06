@@ -9,12 +9,13 @@ async function addBudget(req, res){
         const {ownerId, name, target} = req.body;
 
         if (!ownerId || !name || !target){
-            res.send("ownerId, name, and target fields are required.");
+            return res.send("ownerId, name, and target fields are required.");
         }
 
         const newBudget = await budgetModel.create({
             ownerId: ownerId, 
-            name: name
+            name: name,
+            target: target
         });
 
         logger.info(`${ownerId} has added a ${name} budget.`);
