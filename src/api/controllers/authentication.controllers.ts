@@ -1,6 +1,7 @@
 import { userModel } from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { logger } from "../middlewares/winston.logger.js";
 import { validateToken } from "../middlewares/validate.token.handler.js";
 
 async function registerUser(req, res){
@@ -24,7 +25,8 @@ async function registerUser(req, res){
     });
 
     if(user){
-        return res.status(201).json({_id: user.id})
+        logger.info(`${username} has been registered`);
+        return res.status(201).json({_id: user.id});
     }
     
     return res.status(400).send("User data is not valid.");
@@ -48,8 +50,10 @@ async function loginUser(req, res){
         }, 
         process.env.SECRET,
         {expiresIn: "30m"});
+        
+        logger.info(`${username} has logged in.`);
 
-        return res.status(200).json({accessToken})
+        return res.status(200).json({accessToken});
     }
 
     return res.status(401).send("Log in failed (email or password is not valid).");
