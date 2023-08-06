@@ -18,7 +18,7 @@ categoryRouter.put("/update-category/:id", jsonParser, (req, res) => {
     updateCategory(req, res);
 })
 
-categoryRouter.delete("/delete-category/:id", jsonParser, (req, res) => {
+categoryRouter.delete("/delete-category/:categoryName", jsonParser, (req, res) => {
     deleteCategory(req, res);
 })
 export { categoryRouter };

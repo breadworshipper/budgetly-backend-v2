@@ -11,7 +11,6 @@ async function categoryExistCheck(
             owner: ownerId
         });
         const result = JSON.stringify(results);
-        logger.info(result);
         if (result === "[]" || !result) { return false }
         return true;
     }
@@ -108,7 +107,24 @@ async function updateCategory(req, res) {
 }
 
 async function deleteCategory(req,res) {
-    
+    const categoryName = req.params.categoryName;
+        categoryModel.findOneAndDelete(categoryName)
+            .then(data => {
+                if (!data) {
+                    logger.info(`Tried to delete non-existent ${categoryName}`)
+                    res.status(404).send({ message: `Cannot delete ${categoryName}. Maybe name is wrong` })
+                } else {
+                    res.send({
+                        message: "Category was deleted successfully!"
+                    })
+                    logger.info(`Deleted Category with name ${categoryName}`)
+                }
+            })
+            .catch(err => {
+                res.status(500).send({
+                    message: `Could not delete ${categoryName}.`
+                });
+            });
 }
 
 export { createCategory, readCategory, updateCategory, deleteCategory }
