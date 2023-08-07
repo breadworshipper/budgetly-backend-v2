@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { createCategory, deleteCategory, readCategory, updateCategory } from "../controllers/category.controllers.js";
+import { createCategory, deleteCategory, readCategory, readCategoryByUserId, updateCategory } from "../controllers/category.controllers.js";
 
 const categoryRouter = express.Router();
 const jsonParser = bodyParser.json();
@@ -12,6 +12,10 @@ categoryRouter.post("/create-category", jsonParser, (req, res) => {
 
 categoryRouter.get("/read-category", jsonParser, (req, res) => {
     readCategory(req, res);
+})
+
+categoryRouter.get("/read-category-user/:id", jsonParser, (req, res) => {
+    readCategoryByUserId(req, res);
 })
 
 categoryRouter.put("/update-category/:id", jsonParser, (req, res) => {

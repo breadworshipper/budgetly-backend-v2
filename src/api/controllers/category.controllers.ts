@@ -58,19 +58,34 @@ async function createCategory(req, res) {
 }
 
 async function readCategory(req, res) {
-    if (req.body.id) {
-        //TODO for finding specific category
-    }
-    else {
-        categoryModel.find().then(data => {
-            logger.info(`Sent all category data`)
-            res.send(data)
-        })
-            .catch(err => {
-                res.status(500).send({ message: err.message || "Error Occurred while retriving tracking information" })
+    validateToken(req, res, async () => {
+        const {id} = req.body;
+        if (id) {
+            categoryModel.find({_id: id}).then(data => {
+                logger.info(`Sent all category data`)
+                res.send(data)
             })
-    }
+                .catch(err => {
+                    res.status(500).send({ message: err.message || "Error Occurred while retriving tracking information" })
+                })
+        }
 
+        return res.status(400).send("id field must be specified.");
+    })
+}
+
+async function readCategoryByUserId(req, res){
+    validateToken(req, res, async () => {
+        const ownerId = req.params.id;
+
+        if (!ownerId){
+            return res.status(400).send("userId field must be specified.");
+        }
+
+        const category = await categoryModel.find({ownerId: ownerId});
+
+        return res.json(category);
+    })
 }
 
 async function updateCategory(req, res) {
@@ -111,4 +126,4 @@ async function deleteCategory(req,res) {
     
 }
 
-export { createCategory, readCategory, updateCategory, deleteCategory }
+export { createCategory, readCategory, readCategoryByUserId, updateCategory, deleteCategory }
