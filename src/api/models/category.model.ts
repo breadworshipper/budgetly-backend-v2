@@ -2,7 +2,10 @@ import mongoose from "mongoose";
 
 const categorySchema = new mongoose.Schema(
     {
-        ownerId: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+        ownerId: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: "User"
+        },
         name: String
     }
 );
