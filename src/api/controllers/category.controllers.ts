@@ -3,8 +3,8 @@ import { categoryModel } from "../models/category.model.js";
 import { validateToken } from "../middlewares/validate.token.handler.js";
 
 async function categoryExistCheck(
-    categoryName: String,
-    ownerId: any) {
+    categoryName: string,
+    ownerId: string) {
     try {
         const results = await categoryModel.find({
             name: categoryName,
@@ -12,7 +12,9 @@ async function categoryExistCheck(
         });
         const result = JSON.stringify(results);
         logger.info(result);
-        if (result === "[]" || !result) { return false }
+        if (result === "[]" || !result) { 
+            return false 
+        }
         return true;
     }
     catch (error) {
@@ -22,39 +24,31 @@ async function categoryExistCheck(
 
 async function createCategory(req, res) {
     // validate request
-    if (!req.body) {
-        res.status(400).send({ message: "Content can not be emtpy!" });
-        return;
-    }
+    validateToken(req, res, async () => {
+        const {categoryName, ownerId} = req.body;
 
-    // Get prerequisite data
-    const categoryName = req.body.categoryName;
-
-   await validateToken(req, res, () => { });
-        if(!req.user){ 
-            return;
+        if (!categoryName || !ownerId) {
+            return res.status(400).send({ message: "Content can not be emtpy!" });
         }
-        const ownerId = req.user.id;
 
-    const categoryExistBool = await categoryExistCheck(categoryName, ownerId);
+        const categoryExistBool = await categoryExistCheck(categoryName, ownerId);
+        
+        // Check category existence
+        if (categoryExistBool) {
+            return res.status(500).send({ message: "Category already existed" })
+        }
 
-    // Check category existence
-    if (categoryExistBool) {
-        res.status(500).send({ message: "Category already existed" })
-    }
-    else {
         const category = await categoryModel.create({
             name: categoryName,
-            owner: ownerId
+            ownerId: ownerId
         });
-
+    
         logger.info(`${categoryName} category for ${ownerId} has been created`)
-
+    
         if (category) {
             return res.status(201).json({ _id: category.id })
         }
-    }
-
+     });
 }
 
 async function readCategory(req, res) {
