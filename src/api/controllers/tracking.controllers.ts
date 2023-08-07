@@ -38,9 +38,12 @@ import { createCategory } from "./category.controllers.js";
             logger.info(`${categoryName} category for ${ownerId} has been created`)
     
             if (category) {
-                const categoryId = category.id;
+                categoryId = category.id;
             }
 
+        }
+        else {
+            categoryId = category.id;
         }
 
         const tracking = await trackingModel.create({
@@ -145,6 +148,28 @@ import { createCategory } from "./category.controllers.js";
             });
     }
 
-    // ... Klo ada yang kurang tambahkan
-
-    export { addTracking, readTracking, updateTracking, deleteTracking }
+    async function countTracking(req, res) {
+        try{
+            const nonNullTrackingCount = await trackingModel.countDocuments({ category: { $ne: null } });
+        const categories = await categoryModel.find()
+        const trackingCountPromises = categories.map(async (categoryObject) => {
+            const categoryTotal = await trackingModel.countDocuments({ category: categoryObject.id });
+            const categoryInfo = {
+              categoryName: categoryObject.name,
+              categoryTotal: categoryTotal,
+              categoryPercentage: (categoryTotal / nonNullTrackingCount) * 100,
+            };
+            return categoryInfo;
+          });
+      
+          const trackingCountList = await Promise.all(trackingCountPromises);
+          
+          logger.info(trackingCountList);
+      
+          res.send(trackingCountList);
+        } catch(err) {
+            logger.info(`An error occured, ` + err)
+            res.status(500).send(`An error occured, ` + err)
+        }
+    }
+    export { addTracking, readTracking, updateTracking, deleteTracking, countTracking}
