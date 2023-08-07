@@ -32,7 +32,7 @@ async function registerUser(req, res){
 
             await categoryModel.create({
                 name: categoryName,
-                owner: user.id
+                ownerId: user.id
             });
     
             logger.info(`${categoryName} category for ${user.id} has been created`)
@@ -40,9 +40,6 @@ async function registerUser(req, res){
         logger.info(`${username} has been registered`);
         return res.status(201).json({_id: user.id});
     }
-
-    // TODO: Create 8 custom category for newly registered user
-    
     
     return res.status(400).send("User data is not valid.");
 }
