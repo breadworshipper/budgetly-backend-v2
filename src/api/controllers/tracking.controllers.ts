@@ -6,46 +6,43 @@
 
 
     async function addTracking(req, res) {
-        // validate request
-        if (!req.body) {
-            res.status(400).send({ message: "Content can not be emtpy!" });
-            return;
-        }
+        validateToken(req, res, async () => { 
+            const { name, isExpense, date, categoryName, amount, ownerId } = req.body;
 
-        const { name, isExpense, date, categoryName, amount } = req.body;
-        
-        await validateToken(req, res, () => { });
-        if(!req.user){ 
-            res.status(500).send({ message: "User not found, please make sure you're logged in" })
-            return;
-        }
-        const ownerId = req.user.id;
-        
-        const categoryQueryCriteria = {
-            name: categoryName,
-            owner: ownerId
-        }
-        let category;
-        
-        category = await categoryModel.findOne(categoryQueryCriteria)
-        if (category === null){
-            // create new category
-        }
+            // validate request
+            if (!name || !isExpense || !date || !categoryName || !amount || !ownerId) {
+                return res.status(400).send({ message: "All fields must be specifed!" });
+            }
 
-        logger.info(category);
-        const tracking = await trackingModel.create({
-            name: name,
-            isExpense: isExpense,
-            date: date,
-            category: category,
-            amount: amount,
-            owner : ownerId
+            const categoryQueryCriteria = {
+                name: categoryName,
+                ownerId: ownerId
+            }
+            let category;
+            
+            category = await categoryModel.findOne(categoryQueryCriteria);
+
+            console.log(category);
+
+            if (category === null){
+                // create new category
+            }
+
+            logger.info(category);
+            const tracking = await trackingModel.create({
+                name: name,
+                isExpense: isExpense,
+                date: date,
+                category: category._id,
+                amount: amount,
+                owner : ownerId
+            });
+            logger.info(`A new tracking has been created`)
+
+            if (tracking) {
+                return res.status(201).json({ _id: tracking.id })
+            }
         });
-        logger.info(`A new tracking has been created`)
-
-        if (tracking) {
-            return res.status(201).json({ _id: tracking.id })
-        }
     }
 
     async function readTracking(req, res) {
