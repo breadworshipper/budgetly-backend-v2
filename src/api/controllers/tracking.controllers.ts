@@ -3,6 +3,7 @@
     import { trackingModel } from "../models/tracking.model.js";
     import { categoryModel } from "../models/category.model.js";
     import { validateToken } from "../middlewares/validate.token.handler.js";
+import { createCategory } from "./category.controllers.js";
 
 
     async function addTracking(req, res) {
@@ -28,16 +29,16 @@
                 // create new category
             }
 
-            logger.info(category);
-            const tracking = await trackingModel.create({
-                name: name,
-                isExpense: isExpense,
-                date: date,
-                category: category._id,
-                amount: amount,
-                owner : ownerId
-            });
-            logger.info(`A new tracking has been created`)
+        logger.info(category);
+        const tracking = await trackingModel.create({
+            name: name,
+            isExpense: isExpense,
+            date: date,
+            category: category,
+            amount: amount,
+            owner : ownerId
+        });
+        logger.info(`A new tracking has been created`)
 
             if (tracking) {
                 return res.status(201).json({ _id: tracking.id })
@@ -117,7 +118,7 @@
         trackingModel.findByIdAndDelete(id)
             .then(data => {
                 if (!data) {
-                    res.status(404).send({ message: `Cannot Delete with id ${id}. Maybe id is wrong` })
+                    res.status(404).send({ message: `Tracking with id ${id} not found` })
                 } else {
                     res.send({
                         message: "Tracking was deleted successfully!"
