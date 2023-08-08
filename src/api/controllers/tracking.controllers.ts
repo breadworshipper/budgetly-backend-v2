@@ -82,6 +82,52 @@ async function readTracking(req, res) {
     }
 }
 
+async function readTrackingByUserId(req, res){
+    validateToken(req, res, async () => {
+        const ownerId = req.params.id
+
+        if (!ownerId){
+            return res.status(400).send("ownerId field must be specified.");
+        }
+
+        const trackings = await trackingModel.find({ownerId: ownerId});
+
+        let sortedTrackings = trackings.sort((obj1, obj2) =>
+            obj2.date - obj1.date
+        );
+
+        const todaysDate = new Date();
+        let todaysTrackings = [];
+        let yesterdaysTrackings = [];
+        let pastsTrackings = [];
+
+        // TODO: Refactor 
+        for (let i = 0; i < sortedTrackings.length; i++){
+            const currentTracking = sortedTrackings[i];
+
+            const currentTrackingsDate = currentTracking.date.getDate(); 
+            const currentTrackingsMonth = currentTracking.date.getMonth();
+            const currentTrackingsYear = currentTracking.date.getFullYear();
+
+            if (currentTrackingsYear === todaysDate.getFullYear() 
+            && currentTrackingsMonth === todaysDate.getMonth() 
+            && currentTrackingsDate === todaysDate.getDate()){
+                todaysTrackings.push(currentTracking);
+            }
+            else if (currentTrackingsYear === todaysDate.getFullYear() 
+            && currentTrackingsMonth === todaysDate.getMonth() 
+            && currentTrackingsDate - todaysDate.getDate() === -1){
+                yesterdaysTrackings.push(currentTracking);
+            }
+            else {
+                pastsTrackings.push(currentTracking);
+            }
+        }
+
+        return res.status(200).json({today: todaysTrackings, yesterday: yesterdaysTrackings, past: pastsTrackings});
+    });
+}
+
 async function updateTracking(req, res) {
     if (!req.body) {
         return res
@@ -142,4 +188,4 @@ async function deleteTracking(req, res) {
 
 // ... Klo ada yang kurang tambahkan
 
-export { addTracking, readTracking, updateTracking, deleteTracking }
+export { addTracking, readTracking, readTrackingByUserId, updateTracking, deleteTracking }
