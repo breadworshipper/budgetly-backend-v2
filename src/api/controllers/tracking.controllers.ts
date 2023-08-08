@@ -26,7 +26,17 @@ async function addTracking(req, res) {
         console.log(category);
 
         if (category === null){
-            // create new category
+            const category = await categoryModel.create({
+                name: categoryName,
+                owner: ownerId
+            });
+    
+            logger.info(`${categoryName} category for ${ownerId} has been created`)
+    
+            if (category) {
+                const categoryId = category.id;
+            }
+
         }
 
         let modifiedDate = new Date(date);
@@ -186,6 +196,28 @@ async function deleteTracking(req, res) {
         });
 }
 
-// ... Klo ada yang kurang tambahkan
-
-export { addTracking, readTracking, readTrackingByUserId, updateTracking, deleteTracking }
+async function countTracking(req, res) {
+        try{
+            const nonNullTrackingCount = await trackingModel.countDocuments({ category: { $ne: null } });
+        const categories = await categoryModel.find()
+        const trackingCountPromises = categories.map(async (categoryObject) => {
+            const categoryTotal = await trackingModel.countDocuments({ category: categoryObject.id });
+            const categoryInfo = {
+              categoryName: categoryObject.name,
+              categoryTotal: categoryTotal,
+              categoryPercentage: (categoryTotal / nonNullTrackingCount) * 100,
+            };
+            return categoryInfo;
+          });
+      
+          const trackingCountList = await Promise.all(trackingCountPromises);
+          
+          logger.info(trackingCountList);
+      
+          res.send(trackingCountList);
+        } catch(err) {
+            logger.info(`An error occured, ` + err)
+            res.status(500).send(`An error occured, ` + err)
+        }
+    }
+export { addTracking, readTracking, readTrackingByUserId, updateTracking, deleteTracking, countTracking}

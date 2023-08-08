@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { addTracking, deleteTracking, readTracking, readTrackingByUserId, updateTracking } from "../controllers/tracking.controllers.js";
+import { addTracking, countTracking, deleteTracking, readTracking, readTrackingByUserId, updateTracking } from "../controllers/tracking.controllers.js";
 import { json } from "sequelize";
 
 const trackingRouter = express.Router();
@@ -25,6 +25,10 @@ trackingRouter.put("/update-tracking/:id", jsonParser, (req, res) => {
 
 trackingRouter.delete("/delete-tracking/:id", jsonParser, (req, res) => {
     deleteTracking(req, res);
+});
+
+trackingRouter.get("/count-tracking", jsonParser, (req, res) => {
+    countTracking(req, res);
 });
 
 export {trackingRouter};
