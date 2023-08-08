@@ -10,7 +10,7 @@ const trackingSchema = new mongoose.Schema(
             ref: "Category"
         },
         amount: Number,
-        owner : {type: mongoose.Schema.Types.ObjectId, ref: "User"}
+        ownerId : {type: mongoose.Schema.Types.ObjectId, ref: "User"}
     }
 );
 
