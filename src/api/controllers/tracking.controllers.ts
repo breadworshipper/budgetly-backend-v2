@@ -29,21 +29,22 @@ async function addTracking(req, res) {
             // create new category
         }
 
-    logger.info(category);
-    const tracking = await trackingModel.create({
-        name: name,
-        isExpense: isExpense,
-        date: date,
-        category: category,
-        amount: amount,
-        owner : ownerId
-    });
-    logger.info(`A new tracking has been created`)
+        logger.info(category);
+        const tracking = await trackingModel.create({
+            name: name,
+            isExpense: isExpense,
+            date: date,
+            category: category,
+            amount: amount,
+            ownerId : ownerId
+        });
+        logger.info(`A new tracking has been created`)
 
-        if (tracking) {
-            return res.status(201).json({ _id: tracking.id })
+            if (tracking) {
+                return res.status(201).json({ _id: tracking.id })
+            }
         }
-    });
+    );
 }
 
 async function readTracking(req, res) {
