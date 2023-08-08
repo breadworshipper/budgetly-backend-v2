@@ -11,7 +11,7 @@ async function addTracking(req, res) {
         const { name, isExpense, date, categoryName, amount, ownerId } = req.body;
 
         // validate request
-        if (!name || !isExpense || !date || !categoryName || !amount || !ownerId) {
+        if (!name || !isExpense || !categoryName || !amount || !ownerId) {
             return res.status(400).send({ message: "All fields must be specifed!" });
         }
 
@@ -29,12 +29,18 @@ async function addTracking(req, res) {
             // create new category
         }
 
-        logger.info(category);
+        let modifiedDate = new Date(date);
+        const currentDate = new Date();
+
+        modifiedDate.setHours(currentDate.getHours() + 7);
+        modifiedDate.setMinutes(currentDate.getMinutes());
+        modifiedDate.setMilliseconds(currentDate.getMilliseconds());
+
         const tracking = await trackingModel.create({
             name: name,
             isExpense: isExpense,
-            date: date,
-            category: category,
+            date: modifiedDate,
+            category: category._id,
             amount: amount,
             ownerId : ownerId
         });
