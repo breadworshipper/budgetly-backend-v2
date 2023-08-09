@@ -4,6 +4,7 @@ import { trackingModel } from "../models/tracking.model.js";
 import { categoryModel } from "../models/category.model.js";
 import { validateToken } from "../middlewares/validate.token.handler.js";
 import { createCategory } from "./category.controllers.js";
+import { budgetModel } from "../models/budget.model.js";
 
 
 async function addTracking(req, res) {
@@ -19,11 +20,7 @@ async function addTracking(req, res) {
             name: categoryName,
             ownerId: ownerId
         }
-        let category;
-        
-        category = await categoryModel.findOne(categoryQueryCriteria);
-
-        console.log(category);
+        let category = await categoryModel.findOne(categoryQueryCriteria);
 
         if (category === null){
             const category = await categoryModel.create({
@@ -37,6 +34,8 @@ async function addTracking(req, res) {
                 const categoryId = category.id;
             }
 
+        } else {
+            await budgetModel.updateMany({ownerId: ownerId, categoryId: category._id}, {$inc: {currentSpending: amount}});
         }
 
         let modifiedDate = new Date(date);

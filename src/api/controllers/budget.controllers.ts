@@ -1,21 +1,25 @@
 import { budgetModel } from "../models/budget.model.js";
 import { logger } from "../middlewares/winston.logger.js"
 import { validateToken } from "../middlewares/validate.token.handler.js"
+import { oneMonthFromNow } from "../helpers/one.month.increment.js";
 
 
 async function addBudget(req, res){
     validateToken(req, res, async () => {
         // TODO : startDate, endDate
-        const {ownerId, name, target} = req.body;
+        const {ownerId, categoryId, name, target, startDate, endDate} = req.body;
 
-        if (!ownerId || !name || !target){
-            return res.send("ownerId, name, and target fields are required.");
+        if (!ownerId || !categoryId || !name || !target){
+            return res.send("ownerId, categoryId, name, and target fields are required.");
         }
 
         const newBudget = await budgetModel.create({
             ownerId: ownerId, 
+            categoryId: categoryId,
             name: name,
-            target: target
+            target: target,
+            startDate: (startDate === null) ? Date.now() : startDate,
+            endDate: (endDate === null) ? oneMonthFromNow() : endDate
         });
 
         logger.info(`${ownerId} has added a ${name} budget.`);
