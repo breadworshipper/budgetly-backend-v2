@@ -8,6 +8,10 @@ const budgetSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
+        categoryId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category"
+        },
         name: String,
         currentSpending: {
             type: Number,
