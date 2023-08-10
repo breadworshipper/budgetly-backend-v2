@@ -7,7 +7,7 @@ import { oneMonthFromNow } from "../helpers/one.month.increment.js";
 async function addBudget(req, res){
     validateToken(req, res, async () => {
         // TODO : startDate, endDate
-        const {ownerId, categoryId, name, target, startDate, endDate} = req.body;
+        const {ownerId, categoryId, name, target, startDate, endDate, recurring} = req.body;
 
         if (!ownerId || !categoryId || !name || !target){
             return res.send("ownerId, categoryId, name, and target fields are required.");
@@ -19,7 +19,8 @@ async function addBudget(req, res){
             name: name,
             target: target,
             startDate: (startDate === null) ? Date.now() : startDate,
-            endDate: (endDate === null) ? oneMonthFromNow() : endDate
+            endDate: (endDate === null) ? oneMonthFromNow() : endDate,
+            recurring: (recurring === null) ? false : recurring
         });
 
         logger.info(`${ownerId} has added a ${name} budget.`);
@@ -47,6 +48,8 @@ async function readBudgetByUserId(req, res){
         const userId = req.params.id;
 
         const userBudget = await budgetModel.find({ownerId: userId});
+
+        // TODO : Check each budget's recurring (Update if today is endDate)
 
         return res.status(200).json(userBudget);
     });
