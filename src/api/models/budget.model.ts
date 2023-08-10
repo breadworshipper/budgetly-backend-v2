@@ -29,6 +29,10 @@ const budgetSchema = new mongoose.Schema(
             type: Date,
             default: oneMonthFromNow
         },
+        recurring: {
+            type: Boolean,
+            required: true
+        }
     }
 );
 
