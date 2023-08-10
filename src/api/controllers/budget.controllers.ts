@@ -62,12 +62,19 @@ async function updateBudget(req, res){
     
             const budgetId = req.params.id;
             
-            // TODO : rest of the budget attributes
-            const {name, target} = req.body;
-    
+            const {name, target, startDate, endDate, recurring} = req.body;
+            
+            const updateData = {
+                name : name ?? undefined,
+                target : target ?? undefined,
+                startDate: startDate ?? undefined,
+                endDate : endDate ?? undefined,
+                recurring : recurring ?? undefined
+            }
+
             const updatedBudget = await budgetModel.findByIdAndUpdate(
                 {_id : budgetId},
-                {name: name, target: target},
+                {$set : updateData},
                 {new: true});
 
             return res.status(200).json(updatedBudget);
