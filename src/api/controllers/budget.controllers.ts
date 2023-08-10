@@ -6,7 +6,6 @@ import { oneMonthFromNow } from "../helpers/one.month.increment.js";
 
 async function addBudget(req, res){
     validateToken(req, res, async () => {
-        // TODO : startDate, endDate
         const {ownerId, categoryId, name, target, startDate, endDate, recurring} = req.body;
 
         if (!ownerId || !categoryId || !name || !target){
