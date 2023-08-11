@@ -32,6 +32,10 @@ const budgetSchema = new mongoose.Schema(
         recurring: {
             type: Boolean,
             required: true
+        },
+        interval: { //Stored in numbers of day
+            type: Number,
+            default: null
         }
     }
 );

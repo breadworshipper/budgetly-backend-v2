@@ -2,6 +2,7 @@ import { budgetModel } from "../models/budget.model.js";
 import { logger } from "../middlewares/winston.logger.js"
 import { validateToken } from "../middlewares/validate.token.handler.js"
 import { oneMonthFromNow } from "../helpers/one.month.increment.js";
+import { getCurrentDate } from "../helpers/get.current.date.js";
 
 
 async function addBudget(req, res){
@@ -17,7 +18,7 @@ async function addBudget(req, res){
             categoryId: categoryId,
             name: name,
             target: target,
-            startDate: (startDate === null) ? Date.now() : startDate,
+            startDate: (startDate === null) ? getCurrentDate() : startDate,
             endDate: (endDate === null) ? oneMonthFromNow() : endDate,
             recurring: (recurring === null) ? false : recurring
         });
@@ -45,10 +46,23 @@ async function readBudget(req, res){
 async function readBudgetByUserId(req, res){
     validateToken(req, res, async () => {
         const userId = req.params.id;
+        const currentDate = getCurrentDate()
+        
+        // Update Recurring budget for the owner
+        budgetModel.find({
+            ownerId: userId,
+            recurring: true,
+            endDate: getCurrentDate()
+        }).then(budgetList => {
+            budgetList.forEach(budget => {
+                budget.updateOne({
+                    startDate: currentDate,
+                    endDate: currentDate.setDate(currentDate.getDate() + budget.interval)
+                })
+            })
+        })
 
         const userBudget = await budgetModel.find({ownerId: userId});
-
-        // TODO : Check each budget's recurring (Update if today is endDate)
 
         return res.status(200).json(userBudget);
     });
