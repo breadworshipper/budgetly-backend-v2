@@ -100,48 +100,110 @@ async function readTracking(req, res) {
 async function readTrackingByUserId(req, res){
     try {
         validateToken(req, res, async () => {
-            const ownerId = req.params.id
+            const ownerId = req.params.id;
+            const groupBy = req.query.groupBy;
+            const sortBy = req.query.sortBy;
     
-            if (!ownerId){
-                return res.status(400).send("ownerId field must be specified.");
+            if (!ownerId || !groupBy || !sortBy){
+                return res.status(400).send("ownerId, groupBy, and sortBy field must be specified.");
             }
     
             const trackings = await trackingModel.find({ownerId: ownerId});
-    
-            let sortedTrackings = trackings.sort((obj1, obj2) =>
-                obj2.date - obj1.date
-            );
-    
-            const todaysDate = new Date();
-            let todaysTrackings = [];
-            let yesterdaysTrackings = [];
-            let pastsTrackings = [];
-    
-            // TODO: Refactor 
-            // TODO: Fix grouping by time bug
-            for (let i = 0; i < sortedTrackings.length; i++){
-                const currentTracking = sortedTrackings[i];
-    
-                const currentTrackingsDate = currentTracking.date.getDate(); 
-                const currentTrackingsMonth = currentTracking.date.getMonth();
-                const currentTrackingsYear = currentTracking.date.getFullYear();
-    
-                if (currentTrackingsYear === todaysDate.getFullYear() 
-                && currentTrackingsMonth === todaysDate.getMonth() 
-                && currentTrackingsDate === todaysDate.getDate()){
-                    todaysTrackings.push(currentTracking);
+            
+            if (groupBy === "time"){
+                // Group by time
+                const todaysDate = new Date();
+                var todaysTrackings = [];
+                var yesterdaysTrackings = [];
+                var pastsTrackings = [];
+
+                for (let i = 0; i < trackings.length; i++){
+                    const currentTracking = trackings[i];
+        
+                    const currentTrackingsDate = currentTracking.date.getDate(); 
+                    const currentTrackingsMonth = currentTracking.date.getMonth();
+                    const currentTrackingsYear = currentTracking.date.getFullYear();
+        
+                    if (currentTrackingsYear === todaysDate.getFullYear() 
+                    && currentTrackingsMonth === todaysDate.getMonth() 
+                    && currentTrackingsDate === todaysDate.getDate()){
+                        todaysTrackings.push(currentTracking);
+                    }
+                    else if (currentTrackingsYear === todaysDate.getFullYear() 
+                    && currentTrackingsMonth === todaysDate.getMonth() 
+                    && currentTrackingsDate - todaysDate.getDate() === -1){
+                        yesterdaysTrackings.push(currentTracking);
+                    }
+                    else {
+                        pastsTrackings.push(currentTracking);
+                    }
                 }
-                else if (currentTrackingsYear === todaysDate.getFullYear() 
-                && currentTrackingsMonth === todaysDate.getMonth() 
-                && currentTrackingsDate - todaysDate.getDate() === -1){
-                    yesterdaysTrackings.push(currentTracking);
+
+                var groupedTrackings = {today: todaysTrackings, yesterday: yesterdaysTrackings, past: pastsTrackings};
+
+                // Sort grouping by time or amount
+                // TODO: Fix bug sorting by time and amount
+                // TODO: Refactor
+                if (sortBy === "time"){    
+                    groupedTrackings.today.sort((obj1, obj2) =>
+                    obj2.date - obj1.date);
+                    groupedTrackings.yesterday.sort((obj1, obj2) =>
+                    obj2.date - obj1.date);
+                    groupedTrackings.past.sort((obj1, obj2) =>
+                    obj2.date - obj1.date);
                 }
-                else {
-                    pastsTrackings.push(currentTracking);
+                else if (sortBy === "amount"){
+                    groupedTrackings.today.sort((obj1, obj2) => 
+                    obj2.amount - obj1.amount);
+                    groupedTrackings.yesterday.sort((obj1, obj2) => 
+                    obj2.amount - obj1.amount);
+                    groupedTrackings.past.sort((obj1, obj2) => 
+                    obj2.amount - obj1.amount);
                 }
             }
-    
-            return res.status(200).json({today: todaysTrackings, yesterday: yesterdaysTrackings, past: pastsTrackings});
+            else if (groupBy === "category"){
+                const result = await trackingModel.aggregate([
+                    {
+                        $sort: {
+                            category: 1,
+                            date: 1
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: "$category",
+                            items: { $push: "$$ROOT" }
+                        }
+                    }
+                ]);
+        
+                const groupedAndSortedData = {};
+                
+                if (sortBy === "time"){
+                    result.forEach(categoryGroup => {
+                        const categoryName = categoryGroup._id;
+                        const sortedItems = categoryGroup.items.sort((a, b) => a.date - b.date);
+                        groupedAndSortedData[categoryName] = sortedItems;
+                    });
+                }
+
+                else if (sortBy === "amount"){
+                    result.forEach(categoryGroup => {
+                        const categoryName = categoryGroup._id;
+                        const sortedItems = categoryGroup.items.sort((a, b) => a.amount - b.amount);
+                        groupedAndSortedData[categoryName] = sortedItems;
+                    });
+                }
+
+
+                return res.json(groupedAndSortedData)
+                // Group by category
+
+                // Sort grouping by time or amount
+            }
+
+            
+            return res.json(groupedTrackings);
         });
     }
     catch {
