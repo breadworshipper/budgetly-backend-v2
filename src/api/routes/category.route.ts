@@ -6,23 +6,24 @@ import { createCategory, deleteCategory, readCategory, readCategoryByUserId, upd
 const categoryRouter = express.Router();
 const jsonParser = bodyParser.json();
 
-categoryRouter.post("/create-category", jsonParser, (req, res) => {
+categoryRouter.post("/", jsonParser, (req, res) => {
     createCategory(req, res);
 });
 
-categoryRouter.get("/read-category", jsonParser, (req, res) => {
-    readCategory(req, res);
+categoryRouter.get("/:id", jsonParser, (req, res) => {
+    if (req.query.type === "objectId"){
+        readCategory(req, res);
+    }
+    else if (req.query.type === "userId"){
+        readCategoryByUserId(req, res);
+    }
 })
 
-categoryRouter.get("/read-category-user/:id", jsonParser, (req, res) => {
-    readCategoryByUserId(req, res);
-})
-
-categoryRouter.put("/update-category/:id", jsonParser, (req, res) => {
+categoryRouter.put("/:id", jsonParser, (req, res) => {
     updateCategory(req, res);
 })
 
-categoryRouter.delete("/delete-category/:id", jsonParser, (req, res) => {
+categoryRouter.delete("/:id", jsonParser, (req, res) => {
     deleteCategory(req, res);
 })
 export { categoryRouter };

@@ -118,6 +118,7 @@ async function readTrackingByUserId(req, res){
             let pastsTrackings = [];
     
             // TODO: Refactor 
+            // TODO: Fix grouping by time bug
             for (let i = 0; i < sortedTrackings.length; i++){
                 const currentTracking = sortedTrackings[i];
     
@@ -211,30 +212,5 @@ async function deleteTracking(req, res) {
     });
 }
 
-async function countTracking(req, res) {
-        try{
-            validateToken(req, res, async () => {
-                const nonNullTrackingCount = await trackingModel.countDocuments({ category: { $ne: null } });
-        const categories = await categoryModel.find()
-        const trackingCountPromises = categories.map(async (categoryObject) => {
-            const categoryTotal = await trackingModel.countDocuments({ category: categoryObject.id });
-            const categoryInfo = {
-              categoryName: categoryObject.name,
-              categoryTotal: categoryTotal,
-              categoryPercentage: (categoryTotal / nonNullTrackingCount) * 100,
-            };
-            return categoryInfo;
-          });
-      
-          const trackingCountList = await Promise.all(trackingCountPromises);
-          
-          logger.info(trackingCountList);
-      
-          res.send(trackingCountList);
-            });
-        } catch(err) {
-            logger.info(`An error occured, ` + err)
-            res.status(500).send(`An error occured, ` + err)
-        }
-    }
-export { addTracking, readTracking, readTrackingByUserId, updateTracking, deleteTracking, countTracking}
+
+export { addTracking, readTracking, readTrackingByUserId, updateTracking, deleteTracking}

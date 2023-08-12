@@ -9,6 +9,7 @@ import { budgetRouter } from "./api/routes/budget.route.js";
 import { logger } from "./api/middlewares/winston.logger.js";
 import { trackingRouter } from "./api/routes/tracking.route.js";
 import { categoryRouter } from "./api/routes/category.route.js";
+import { statsRouter } from "./api/routes/stats.route.js";
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use("/api/v1/auth", authenticationRouter);
 app.use("/api/v1/budget", budgetRouter);
 app.use("/api/v1/tracking", trackingRouter);
 app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/stats", statsRouter);
 
 app.listen(PORT, () => {
     logger.info(`Server is up and running on port ${PORT}.`);

@@ -1,32 +1,34 @@
 import express from "express";
 import bodyParser from "body-parser";
 
-import { addTracking, countTracking, deleteTracking, readTracking, readTrackingByUserId, updateTracking } from "../controllers/tracking.controllers.js";
+import { addTracking, deleteTracking, readTracking, readTrackingByUserId, updateTracking } from "../controllers/tracking.controllers.js";
 import { json } from "sequelize";
 
 const trackingRouter = express.Router();
 const jsonParser = bodyParser.json();
 
-trackingRouter.post("/create-tracking", jsonParser, (req, res) => {
+trackingRouter.post("/", jsonParser, (req, res) => {
     addTracking(req, res);
 });
 
-trackingRouter.get("/read-tracking", jsonParser, (req, res) => {
-    readTracking(req, res);
+trackingRouter.get("/:id", jsonParser, (req, res) => {
+    if (req.query.type === "objectId"){
+        readTracking(req, res);
+    }
+    else if (req.query.type === "userId"){
+        readTrackingByUserId(req, res);
+    }
 });
 
-trackingRouter.get("/read-tracking-user/:id", jsonParser, (req, res) => {
-    readTrackingByUserId(req, res);
-})
-
-trackingRouter.put("/update-tracking/:id", jsonParser, (req, res) => {
+trackingRouter.put("/:id", jsonParser, (req, res) => {
     updateTracking(req, res);
 });
 
-trackingRouter.delete("/delete-tracking/:id", jsonParser, (req, res) => {
+trackingRouter.delete("/:id", jsonParser, (req, res) => {
     deleteTracking(req, res);
 });
 
+// TODO : Pindahin ke stats
 trackingRouter.get("/count-tracking", jsonParser, (req, res) => {
     countTracking(req, res);
 });

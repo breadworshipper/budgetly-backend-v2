@@ -60,7 +60,7 @@ async function createCategory(req, res) {
 async function readCategory(req, res) {
     try{
         validateToken(req, res, async () => {
-            const {id} = req.body;
+            const id = req.params.id;
             if (id) {
                 categoryModel.find({_id: id}).then(data => {
                     logger.info(`Sent all category data`)
