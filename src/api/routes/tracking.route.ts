@@ -28,9 +28,5 @@ trackingRouter.delete("/:id", jsonParser, (req, res) => {
     deleteTracking(req, res);
 });
 
-// TODO : Pindahin ke stats
-trackingRouter.get("/count-tracking", jsonParser, (req, res) => {
-    countTracking(req, res);
-});
 
 export {trackingRouter};

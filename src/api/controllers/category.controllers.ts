@@ -122,7 +122,7 @@ async function updateCategory(req, res) {
                     message: `Category with id ${id} not found`
                 })
             } else {
-                if (data.owner.toString() !== ownerId){
+                if (data.ownerId.toString() !== ownerId){
                     res.status(401).send({
                         message: `Updating user is not the same as category's owner`
                     })
@@ -162,7 +162,7 @@ async function deleteCategory(req,res) {
                 } else {
                     res.send({
                         message: "Category was deleted successfully!"
-                    })
+                    })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
                     logger.info(`Deleted category with ID ${id}`)
                 }
             })
