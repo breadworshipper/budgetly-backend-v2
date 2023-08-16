@@ -17,7 +17,7 @@ let dbUrl = process.env.DEVELOPMENT_DB_URL;
 
 const PORT = process.env.PORT || 3030;
 
-if (process.env.NOVE_ENV === "production"){
+if (process.env.NODE_ENV === "production"){
     dbUrl = process.env.PRODUCTION_DB_URL;
 }
 
