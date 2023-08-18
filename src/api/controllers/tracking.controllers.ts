@@ -69,8 +69,8 @@ async function addTracking(req, res) {
 }
 
 async function readTracking(req, res) {
-    if (req.body.id) {
-        const id = req.body.id;
+    if (req.params.id) {
+        const id = req.params.id;
 
         trackingModel.findById(id)
             .then(data => {
