@@ -11,11 +11,12 @@ budgetRouter.post("/", jsonParser, (req, res) => {
 });
 
 budgetRouter.get("/:id", jsonParser, (req, res) => {
-    readBudget(req, res);
-});
-
-budgetRouter.get("/user/:id", jsonParser, (req, res) => {
-    readBudgetByUserId(req, res);
+    if (req.query.type === "objectId"){
+        readBudget(req, res);
+    }
+    else (req.query.type === "userId"){
+        readBudgetByUserId(req, res);
+    }
 });
 
 budgetRouter.put("/:id", jsonParser, (req, res) => {
