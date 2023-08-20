@@ -69,7 +69,6 @@ async function readBudgetByUserId(req, res){
 }
 
 async function updateBudget(req, res){
-    try {
         validateToken(req, res, async() => {
         
             if (!req.body) {
@@ -95,7 +94,6 @@ async function updateBudget(req, res){
 
             return res.status(200).json(updatedBudget);
         });
-    }
 }
 
 async function deleteBudget(req, res){

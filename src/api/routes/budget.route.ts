@@ -18,7 +18,7 @@ budgetRouter.get("/:id", jsonParser, (req, res) => {
             .catch(console.error)
             .then(() => res.status(500).send("Error getting a budget."));
     }
-    else (req.query.type === "userId"){
+    else if (req.query.type === "userId"){
         readBudgetByUserId(req, res)
             .catch(console.error)
             .then(() => res.status(500).send("Error getting user's budget."));
