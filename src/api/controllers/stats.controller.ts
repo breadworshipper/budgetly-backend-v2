@@ -4,7 +4,7 @@ import { logger } from "../middlewares/winston.logger.js";
 import { categoryModel } from "../models/category.model.js";
 
 async function countTracking(req, res) {
-    try{
+  
         validateToken(req, res, async () => {
             const nonNullTrackingCount = await trackingModel.countDocuments({ category: { $ne: null } });
     const categories = await categoryModel.find()
@@ -24,10 +24,6 @@ async function countTracking(req, res) {
   
       res.send(trackingCountList);
         });
-    } catch(err) {
-        logger.info(`An error occured, ` + err)
-        res.status(500).send(`An error occured, ` + err)
-    }
 }
 
 export {countTracking}

@@ -6,7 +6,6 @@ import { getCurrentDate } from "../helpers/get.current.date.js";
 
 
 async function addBudget(req, res){
-    try{
         validateToken(req, res, async () => {
             const {ownerId, categoryId, name, target, startDate, endDate, recurring} = req.body;
     
@@ -28,14 +27,9 @@ async function addBudget(req, res){
     
             return res.json({newBudgetId: newBudget.id});
         });
-    }
-    catch {
-        return res.status(500).send("Error occured while adding a budget.");
-    }
 }
 
 async function readBudget(req, res){
-    try {
         validateToken(req, res, async () => {
             const budgetId = req.params.id;
     
@@ -47,14 +41,9 @@ async function readBudget(req, res){
         
             return res.status(200).send(budget);
         });
-    }
-    catch {
-        res.status(500).send("Error occured while reading a budget")
-    }
 }
 
 async function readBudgetByUserId(req, res){
-    try {
         validateToken(req, res, async () => {
             const userId = req.params.id;
             const currentDate = getCurrentDate()
@@ -77,12 +66,6 @@ async function readBudgetByUserId(req, res){
     
             return res.status(200).json(userBudget);
         });
-    }
-    catch{
-        return res.status(500).send("Error reading user's budget")
-    }
-    
-    
 }
 
 async function updateBudget(req, res){
@@ -113,13 +96,9 @@ async function updateBudget(req, res){
             return res.status(200).json(updatedBudget);
         });
     }
-    catch {
-        return res.status(500).send("Error updating a budget")
-    }
 }
 
 async function deleteBudget(req, res){
-    try {
         validateToken(req, res, async () => {
             const budgetId = req.params.id;
 
@@ -127,10 +106,6 @@ async function deleteBudget(req, res){
     
             return res.status(200).json(deletedBudget);
         });
-    }
-    catch {
-        return res.status(500).send("Error deleting budget.");
-    }
 }
 
 export {addBudget, readBudget, readBudgetByUserId, updateBudget, deleteBudget}

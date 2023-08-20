@@ -8,7 +8,6 @@ import { budgetModel } from "../models/budget.model.js";
 
 
 async function addTracking(req, res) {
-    try{
         validateToken(req, res, async () => { 
             const { name, isExpense, date, categoryName, amount, ownerId } = req.body;
     
@@ -61,11 +60,6 @@ async function addTracking(req, res) {
                 }
             }
         );
-    }
-    catch{
-        return res.status(500).send("Error adding a tracking");
-    }
-    
 }
 
 async function readTracking(req, res) {
@@ -75,30 +69,29 @@ async function readTracking(req, res) {
         trackingModel.findById(id)
             .then(data => {
                 if (!data) {
-                    res.status(404).send({ message: "Not found tracking with id " + id })
+                    return res.status(500).send({ message: "Not found tracking with id " + id })
                 } else {
                     logger.info(`Sent tracking data with ID ${id}`)
-                    res.send(data)
+                    return res.send(data)
                 }
             })
             .catch(err => {
-                res.status(500).send({ message: "Error retrieving tracking with id " + id })
+                return res.status(500).send({ message: "Error retrieving tracking with id " + id })
             })
 
     } else {
         trackingModel.find()
             .then(data => {
                 logger.info(`Sent all tracking data`)
-                res.send(data)
+                return res.send(data)
             })
             .catch(err => {
-                res.status(500).send({ message: err.message || "Error Occurred while retriving tracking information" })
+                return res.status(500).send({ message: err.message || "Error Occurred while retriving tracking information" })
             })
     }
 }
 
 async function readTrackingByUserId(req, res){
-    try {
         validateToken(req, res, async () => {
             const ownerId = req.params.id;
             const groupBy = req.query.groupBy;
@@ -197,19 +190,10 @@ async function readTrackingByUserId(req, res){
 
 
                 return res.json(groupedAndSortedData)
-                // Group by category
-
-                // Sort grouping by time or amount
             }
 
-            
             return res.json(groupedTrackings);
         });
-    }
-    catch {
-        return res.status(500).send("Error reading user's tracking");
-    }
-    
 }
 
 async function updateTracking(req, res) {
@@ -260,14 +244,14 @@ async function deleteTracking(req, res) {
             if (!data) {
                 res.status(404).send({ message: `Tracking with id ${id} not found` })
             } else {
-                res.send({
+                logger.info(`Deleted tracking with ID ${id}`)
+                return res.send({
                     message: "Tracking was deleted successfully!"
                 })
-                logger.info(`Deleted tracking with ID ${id}`)
             }
         })
         .catch(err => {
-            res.status(500).send({
+            return res.status(500).send({
                 message: `Could not delete Tracking with id= ${id}`
             });
         });

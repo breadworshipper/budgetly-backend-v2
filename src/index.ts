@@ -11,6 +11,10 @@ import { trackingRouter } from "./api/routes/tracking.route.js";
 import { categoryRouter } from "./api/routes/category.route.js";
 import { statsRouter } from "./api/routes/stats.route.js";
 
+process.on('uncaughtException', function (error) {
+    logger.error(error.stack);
+ });
+
 const app = express();
 
 let dbUrl = process.env.DEVELOPMENT_DB_URL;

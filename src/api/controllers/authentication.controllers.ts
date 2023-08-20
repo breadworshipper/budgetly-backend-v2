@@ -6,7 +6,6 @@ import { validateToken } from "../middlewares/validate.token.handler.js";
 import { categoryModel } from "../models/category.model.js";
 
 async function registerUser(req, res){
-    try{
         const {username, password} = req.body;
 
         if (!username || !password){
@@ -43,14 +42,9 @@ async function registerUser(req, res){
         }
         
         return res.status(400).send("User data is not valid.");
-    }
-    catch {
-        return res.status(500).send("Error occured trying to register a user");
-    }
 }
 
 async function loginUser(req, res){
-    try{
         const {username, password} = req.body;
 
         if (!username || !password){
@@ -75,12 +69,6 @@ async function loginUser(req, res){
         }
     
         return res.status(401).send("Log in failed (email or password is not valid).");
-    }
-
-    catch{
-        return res.status(500).send("Error occured while logging in");
-    }
-
 }
 
 async function currentUser(req, res){

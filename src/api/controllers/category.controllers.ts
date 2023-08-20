@@ -24,7 +24,6 @@ async function categoryExistCheck(
 }
 
 async function createCategory(req, res) {
-    try{
          // validate request
         validateToken(req, res, async () => {
         const {categoryName, ownerId} = req.body;
@@ -51,10 +50,6 @@ async function createCategory(req, res) {
             return res.status(201).json({ _id: category.id })
         }
      });
-    }
-    catch {
-        return res.status(500).send("Error adding a category");
-    }
 }
 
 async function readCategory(req, res) {
@@ -94,7 +89,7 @@ async function readCategoryByUserId(req, res){
             return res.json(category);
         })
     }
-    catch{
+    catch(err){
         return res.status(500).send("Error reading user's category");
     }
 }
@@ -158,16 +153,16 @@ async function deleteCategory(req,res) {
         categoryModel.findByIdAndDelete(id)
             .then(data => {
                 if (!data) {
-                    res.status(404).send({ message: `Category with id ${id} not found` })
+                    return res.status(404).send({ message: `Category with id ${id} not found` })
                 } else {
-                    res.send({
+                    logger.info(`Deleted category with ID ${id}`)
+                    return res.send({
                         message: "Category was deleted successfully!"
                     })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-                    logger.info(`Deleted category with ID ${id}`)
                 }
             })
             .catch(err => {
-                res.status(500).send({
+                return res.status(500).send({
                     message: `Could not delete category with id= ${id}`
                 });
             });
