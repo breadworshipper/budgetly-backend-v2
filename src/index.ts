@@ -10,6 +10,7 @@ import { logger } from "./api/middlewares/winston.logger.js";
 import { trackingRouter } from "./api/routes/tracking.route.js";
 import { categoryRouter } from "./api/routes/category.route.js";
 import { statsRouter } from "./api/routes/stats.route.js";
+import { pingRouter } from "./api/routes/ping.route.js";
 
 process.on('uncaughtException', function (error) {
     logger.error(error.stack);
@@ -37,6 +38,7 @@ app.use("/api/v1/budget", budgetRouter);
 app.use("/api/v1/tracking", trackingRouter);
 app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/stats", statsRouter);
+app.use("/api/v1/ping", pingRouter);
 
 app.listen(PORT, () => {
     logger.info(`Server is up and running on port ${PORT}.`);
