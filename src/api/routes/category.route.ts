@@ -13,25 +13,25 @@ categoryRouter.post("/", jsonParser, (req, res) => {
 categoryRouter.get("/:id", jsonParser, (req, res) => {
     if (req.query.type === "objectId"){
         readCategory(req, res)
-            .catch(console.error)
-            .then(() => res.status(500).send("Error adding a category."));
+            // .catch(console.error)
+            // .then(() => res.status(500).send("Error reading a category."));
     }
     else if (req.query.type === "userId"){
         readCategoryByUserId(req, res)
-            .catch(console.error)
-            .then(() => res.status(500).send("Error adding a category."));
+            // .catch(console.error)
+            // .then(() => res.status(500).send("Error reading a category."));
     }
 })
 
 categoryRouter.put("/:id", jsonParser, (req, res) => {
     updateCategory(req, res)
-        .catch(console.error)
-        .then(() => res.status(500).send("Error updating a category."));
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error updating a category."));
 })
 
 categoryRouter.delete("/:id", jsonParser, (req, res) => {
     deleteCategory(req, res)
-        .catch(console.error)
-        .then(() => res.status(500).send("Error deleting a category."));
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error deleting a category."));
 })
 export { categoryRouter };

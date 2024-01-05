@@ -7,8 +7,8 @@ const jsonParser = bodyParser.json();
 
 statsRouter.get("/", jsonParser, (req, res) => {
     countTracking(req, res)
-        .catch(console.error)
-        .then(() => res.status(500).send("Error getting stats."));
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error getting stats."));
 })
 
 export {statsRouter};

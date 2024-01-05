@@ -8,14 +8,14 @@ const jsonParser = bodyParser.json();
 
 authenticationRouter.post("/register", jsonParser, (req, res) => {
     registerUser(req, res)
-        .catch(console.error)
-        .then(() => res.status(500).send("Error registering a user.")); 
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error registering a user.")); 
 });
 
 authenticationRouter.post("/login", jsonParser, (req, res) => {
     loginUser(req, res)
-        .catch(console.error)
-        .then(() => res.status(500).send("Error logging in a user."));
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error logging in a user."));
 });
 
 authenticationRouter.post("/current", (req, res) => {
