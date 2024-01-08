@@ -11,12 +11,20 @@ import { trackingRouter } from "./api/routes/tracking.route.js";
 import { categoryRouter } from "./api/routes/category.route.js";
 import { statsRouter } from "./api/routes/stats.route.js";
 import { pingRouter } from "./api/routes/ping.route.js";
+import cors from "cors";
 
 process.on('uncaughtException', function (error) {
     logger.error(error.stack);
  });
 
 const app = express();
+
+const corsOptions = {
+    origin: "*", // Allow requests from any origin
+  };
+  
+
+app.use(cors(corsOptions));
 
 let dbUrl = process.env.DEVELOPMENT_DB_URL;
 
