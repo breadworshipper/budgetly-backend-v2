@@ -20,7 +20,8 @@ async function addBudget(req, res){
                 target: target,
                 startDate: (startDate === null) ? getCurrentDate() : startDate,
                 endDate: (endDate === null) ? oneMonthFromNow() : endDate,
-                recurring: (recurring === null) ? false : recurring
+                recurring: (recurring === null) ? false : recurring,
+                interval: (recurring === null || recurring == false) ? null : Math.floor((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))
             });
     
             logger.info(`${ownerId} has added a ${name} budget.`);
@@ -47,23 +48,31 @@ async function readBudgetByUserId(req, res){
         validateToken(req, res, async () => {
             const userId = req.params.id;
             const currentDate = getCurrentDate()
-            
-            // Update Recurring budget for the owner
-            budgetModel.find({
+
+            const budgetList = await budgetModel.find({
                 ownerId: userId,
                 recurring: true,
-                endDate: getCurrentDate()
-            }).then(budgetList => {
-                budgetList.forEach(budget => {
-                    budget.updateOne({
-                        startDate: currentDate,
-                        endDate: currentDate.setDate(currentDate.getDate() + budget.interval)
-                    })
-                })
-            })
-    
+            });
+
+            console.log(`budgetList: ${budgetList}`)
+
+            for (const budget of budgetList) {
+                console.log(budget.endDate > currentDate)
+                if (budget.endDate > currentDate) continue;
+                else {
+                    const newStartDate = currentDate;
+                    const newEndDate = new Date(newStartDate);
+                    newEndDate.setDate(newStartDate.getDate() + budget.interval);
+
+                    await budget.updateOne({
+                        startDate: newStartDate,
+                        endDate: newEndDate
+                    });
+                }
+            }
+
             const userBudget = await budgetModel.find({ownerId: userId});
-    
+
             return res.status(200).json(userBudget);
         });
 }
