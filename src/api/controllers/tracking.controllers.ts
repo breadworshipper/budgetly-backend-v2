@@ -213,15 +213,15 @@ async function updateTracking(req, res) {
         const trackingData = {
             name: name,
             isExpense: isExpense,
-            date: date,
-            category: await categoryModel.findOne({ category, ownerId }),
+            date: date,            
+            category: await categoryModel.findOne({ name: category, ownerId: ownerId }),
             amount: amount
         };
     
         trackingModel.findByIdAndUpdate(id, trackingData, { useFindAndModify: false })
             .then(data => {
                 if (!data) {
-                    res.status(404).send({ message: `Cannot Update tracking with ID ${id}. Maybe tracking not found!` })
+                    res.status(404).send({ message: `Cannot Update tracking with ID ${id}. Maybe tracking was not found!` })
                 } else {
                     trackingModel.findById(id).then(data => {
                         logger.info(`Updated tracking with ID ${id}`)
@@ -242,7 +242,7 @@ async function deleteTracking(req, res) {
     trackingModel.findByIdAndDelete(id)
         .then(data => {
             if (!data) {
-                res.status(404).send({ message: `Tracking with id ${id} not found` })
+                res.status(404).send({ message: `Tracking with id ${id} was not found` })
             } else {
                 logger.info(`Deleted tracking with ID ${id}`)
                 return res.send({
@@ -252,7 +252,7 @@ async function deleteTracking(req, res) {
         })
         .catch(err => {
             return res.status(500).send({
-                message: `Could not delete Tracking with id= ${id}`
+                message: `Could not delete Tracking with id = ${id}`
             });
         });
     });
