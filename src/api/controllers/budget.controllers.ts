@@ -21,9 +21,9 @@ async function addBudget(req, res){
                 startDate: (startDate === null) ? getCurrentDate() : startDate,
                 endDate: (endDate === null) ? oneMonthFromNow() : endDate,
                 recurring: (recurring === null) ? false : recurring,
-                interval: (recurring === null || recurring == false) ? null : Math.floor((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24))
+                interval: (recurring === null || recurring == false) ? null : Math.floor((new Date(endDate).getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24))
             });
-    
+
             logger.info(`${ownerId} has added a ${name} budget.`);
     
             return res.json({newBudgetId: newBudget.id});
@@ -54,10 +54,7 @@ async function readBudgetByUserId(req, res){
                 recurring: true,
             });
 
-            console.log(`budgetList: ${budgetList}`)
-
             for (const budget of budgetList) {
-                console.log(budget.endDate > currentDate)
                 if (budget.endDate > currentDate) continue;
                 else {
                     const newStartDate = currentDate;
