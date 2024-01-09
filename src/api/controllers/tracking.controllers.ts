@@ -9,7 +9,9 @@ import { budgetModel } from "../models/budget.model.js";
 
 async function addTracking(req, res) {
         validateToken(req, res, async () => { 
-            const { name, isExpense, date, categoryName, amount, ownerId } = req.body;
+            const { name, isExpense, date, categoryName, amount } = req.body;
+
+            const ownerId = req.user.id;
     
             // validate request
             if (!name || !isExpense || !categoryName || !amount || !ownerId) {
@@ -93,9 +95,12 @@ async function readTracking(req, res) {
 
 async function readTrackingByUserId(req, res){
         validateToken(req, res, async () => {
-            const ownerId = req.params.id;
+            // const ownerId = req.params.id;
+            const ownerId = req.user.id;
             const groupBy = req.query.groupBy;
             const sortBy = req.query.sortBy;
+
+            console.log(req.user.id)
     
             if (!ownerId || !groupBy || !sortBy){
                 return res.status(400).send("ownerId, groupBy, and sortBy field must be specified.");

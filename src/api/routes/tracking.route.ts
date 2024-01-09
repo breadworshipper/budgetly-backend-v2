@@ -12,7 +12,7 @@ trackingRouter.post("/", jsonParser, (req, res) => {
         // .then(() => res.status(500).send("Error adding a tracking."));
 });
 
-trackingRouter.get("/:id", jsonParser, (req, res) => {
+trackingRouter.get("/", jsonParser, (req, res) => {
     if (req.query.type === "objectId"){
         readTracking(req, res)
             // .catch(console.error)
