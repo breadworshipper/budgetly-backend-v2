@@ -5,7 +5,7 @@ import { countTracking } from "../controllers/stats.controller.js";
 const statsRouter = express.Router();
 const jsonParser = bodyParser.json();
 
-statsRouter.get("/:id", jsonParser, (req, res) => {
+statsRouter.get("/", jsonParser, (req, res) => {
     countTracking(req, res)
         // .catch(console.error)
         // .then(() => res.status(500).send("Error getting stats."));

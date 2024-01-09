@@ -6,7 +6,7 @@ import { ObjectId } from "mongodb";
 
 async function countTracking(req, res) {
   validateToken(req, res, async () => {
-    const ownerId = req.params.id; // Assuming the userId is passed as a parameter
+    const ownerId = req.user.id; // Assuming the userId is passed as a parameter
 
     console.log(`userId: ${ownerId}`)
 
