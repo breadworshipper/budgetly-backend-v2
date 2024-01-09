@@ -10,17 +10,10 @@ categoryRouter.post("/", jsonParser, (req, res) => {
     createCategory(req, res);
 });
 
-categoryRouter.get("/:id", jsonParser, (req, res) => {
-    if (req.query.type === "objectId"){
-        readCategory(req, res)
-            // .catch(console.error)
-            // .then(() => res.status(500).send("Error reading a category."));
-    }
-    else if (req.query.type === "userId"){
-        readCategoryByUserId(req, res)
-            // .catch(console.error)
-            // .then(() => res.status(500).send("Error reading a category."));
-    }
+categoryRouter.get("/", jsonParser, (req, res) => {
+    readCategoryByUserId(req, res)
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error reading a category."));
 })
 
 categoryRouter.put("/:id", jsonParser, (req, res) => {

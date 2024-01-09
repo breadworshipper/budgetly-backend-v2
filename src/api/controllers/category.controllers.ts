@@ -26,7 +26,9 @@ async function categoryExistCheck(
 async function createCategory(req, res) {
          // validate request
         validateToken(req, res, async () => {
-        const {categoryName, ownerId} = req.body;
+        const {categoryName} = req.body;
+
+        const ownerId = req.user.id;
 
         if (!categoryName || !ownerId) {
             return res.status(400).send({ message: "Content can not be emtpy!" });
@@ -78,7 +80,7 @@ async function readCategory(req, res) {
 async function readCategoryByUserId(req, res){
     try {
         validateToken(req, res, async () => {
-            const ownerId = req.params.id;
+            const ownerId = req.user.id;
     
             if (!ownerId){
                 return res.status(400).send("userId field must be specified.");
