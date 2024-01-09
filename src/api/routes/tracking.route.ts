@@ -13,16 +13,10 @@ trackingRouter.post("/", jsonParser, (req, res) => {
 });
 
 trackingRouter.get("/", jsonParser, (req, res) => {
-    if (req.query.type === "objectId"){
-        readTracking(req, res)
-            // .catch(console.error)
-            // .then(() => res.status(500).send("Error getting a tracking."));
-    }
-    else if (req.query.type === "userId"){
-        readTrackingByUserId(req, res)
-            // .catch(console.error)
-            // .then(() => res.status(500).send("Error getting user's tracking."));
-    }
+    readTrackingByUserId(req, res)
+        // .catch(console.error)
+        // .then(() => res.status(500).send("Error getting user's tracking."));
+    
 });
 
 trackingRouter.put("/:id", jsonParser, (req, res) => {
