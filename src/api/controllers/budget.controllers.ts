@@ -7,10 +7,12 @@ import { getCurrentDate } from "../helpers/get.current.date.js";
 
 async function addBudget(req, res){
         validateToken(req, res, async () => {
-            const {ownerId, categoryId, name, target, startDate, endDate, recurring} = req.body;
+            const {categoryId, name, target, startDate, endDate, recurring} = req.body;
+
+            const ownerId = req.user.id;
     
-            if (!ownerId || !categoryId || !name || !target){
-                return res.send("ownerId, categoryId, name, and target fields are required.");
+            if (!categoryId || !name || !target){
+                return res.send("CategoryId, name, and target fields are required.");
             }
     
             const newBudget = await budgetModel.create({
@@ -46,7 +48,7 @@ async function readBudget(req, res){
 
 async function readBudgetByUserId(req, res){
         validateToken(req, res, async () => {
-            const userId = req.params.id;
+            const userId = req.user.id;
             const currentDate = getCurrentDate()
 
             const budgetList = await budgetModel.find({
