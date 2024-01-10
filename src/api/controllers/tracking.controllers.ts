@@ -9,35 +9,13 @@ import { budgetModel } from "../models/budget.model.js";
 
 async function addTracking(req, res) {
         validateToken(req, res, async () => { 
-            const { name, isExpense, date, categoryName, amount } = req.body;
+            const { name, isExpense, date, categoryId, amount } = req.body;
 
             const ownerId = req.user.id;
     
             // validate request
-            if (!name || !isExpense || !categoryName || !amount || !ownerId) {
+            if (!name || !isExpense || !categoryId || !amount || !ownerId) {
                 return res.status(400).send({ message: "All fields must be specifed!" });
-            }
-    
-            const categoryQueryCriteria = {
-                name: categoryName,
-                ownerId: ownerId
-            }
-            let category = await categoryModel.findOne(categoryQueryCriteria);
-    
-            if (category === null){
-                const category = await categoryModel.create({
-                    name: categoryName,
-                    owner: ownerId
-                });
-        
-                logger.info(`${categoryName} category for ${ownerId} has been created`)
-        
-                if (category) {
-                    const categoryId = category.id;
-                }
-    
-            } else {
-                await budgetModel.updateMany({ownerId: ownerId, categoryId: category._id}, {$inc: {currentSpending: amount}});
             }
     
             let modifiedDate = new Date(date);
@@ -51,17 +29,17 @@ async function addTracking(req, res) {
                 name: name,
                 isExpense: isExpense,
                 date: modifiedDate,
-                category: category._id,
+                category: categoryId,
                 amount: amount,
                 ownerId : ownerId
             });
-            logger.info(`A new tracking has been created`)
+            logger.info(`A new tracking has been created with ID ${tracking.id}`)
     
-                if (tracking) {
-                    return res.status(201).json({ _id: tracking.id })
-                }
+            if (tracking) {
+                return res.status(201).json({ _id: tracking.id })
             }
-        );
+        }
+    );
 }
 
 async function readTracking(req, res) {
