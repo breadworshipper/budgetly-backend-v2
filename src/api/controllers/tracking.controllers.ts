@@ -188,7 +188,7 @@ async function updateTracking(req, res) {
         }
         const id = req.params.id;
     
-        const { name, isExpense, date, category, amount } = req.body;
+        const { name, isExpense, date, categoryId, amount } = req.body;
     
         await validateToken(req, res, () => { });
         const ownerId = req.user.id;
@@ -197,7 +197,7 @@ async function updateTracking(req, res) {
             name: name,
             isExpense: isExpense,
             date: date,            
-            category: await categoryModel.findOne({ name: category, ownerId: ownerId }),
+            category: categoryId,
             amount: amount
         };
     
