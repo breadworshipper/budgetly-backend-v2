@@ -33,6 +33,12 @@ async function addTracking(req, res) {
                 amount: amount,
                 ownerId : ownerId
             });
+
+            await budgetModel.updateMany(
+            { ownerId: ownerId, categoryId: categoryId, endDate: { $gt: new Date() }}, // Filter
+            { $inc: { currentSpending: amount } } // Update
+            );
+
             logger.info(`A new tracking has been created with ID ${tracking.id}`)
     
             if (tracking) {
@@ -206,8 +212,13 @@ async function updateTracking(req, res) {
                 if (!data) {
                     res.status(404).send({ message: `Cannot Update tracking with ID ${id}. Maybe tracking was not found!` })
                 } else {
-                    trackingModel.findById(id).then(data => {
+                    trackingModel.findById(id).then(async(data) => {
                         logger.info(`Updated tracking with ID ${id}`)
+                        const difference = data.amount - amount;
+                        await budgetModel.updateMany(
+                            { ownerId: ownerId, categoryId: categoryId, endDate: { $gt: new Date() }}, // Filter
+                            { $inc: { currentSpending: difference } } // Update
+                            );
                         res.send(data)
                     })
                 }
